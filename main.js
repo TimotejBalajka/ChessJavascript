@@ -39,7 +39,7 @@ function allowDrop(ev) {
 
 function drag(ev) {
     const piece = ev.target;
-    console.log("Dragging: " + piece.id);
+    //console.log("Dragging: " + piece.id);
     const pieceColor = piece.getAttribute("color");
     if ((isWhiteTurn && pieceColor == "white") || (!isWhiteTurn && pieceColor == "black")) {
         ev.dataTransfer.setData("text/plain", piece.id);
@@ -50,7 +50,30 @@ function drop(ev) {
     ev.preventDefault();
     const pieceId = ev.dataTransfer.getData("text/plain");
     const piece = document.getElementById(pieceId);
-    console.log("Dropping on: " + ev.currentTarget.id);
-    ev.currentTarget.appendChild(piece);
-    isWhiteTurn = !isWhiteTurn;
+    //console.log("Dropping on: " + ev.currentTarget.id);
+    const destination = ev.currentTarget;
+    if (isSquareOccupied(destination) == "blank") {
+        destination.appendChild(piece);
+        isWhiteTurn = !isWhiteTurn;
+        return;
+    }
+
+    if (isSquareOccupied(destination) !== "blank") {
+        while (destination.firstChild) {
+            destination.removeChild(destination.firstChild);
+        }
+        destination.appendChild(piece);
+        isWhiteTurn = !isWhiteTurn;
+        return;
+    }
+}
+
+function isSquareOccupied(square) {
+    if (square.querySelector(".piece")) {
+        const color = square.querySelector(".piece").getAttribute("color");
+        return color;
+    }
+    else {
+        return "blank";
+    }
 }
