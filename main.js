@@ -10,9 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
     setupPieces();
 });
 
-        // Cele to pozri podla videa pre istotu davalo ti to chatgtp
-
-
 function setupBoardSquares() {
     for (let i = 0; i < boardSquares.length; i++) {
         boardSquares[i].addEventListener("dragover", allowDrop);
@@ -42,14 +39,18 @@ function allowDrop(ev) {
 
 function drag(ev) {
     const piece = ev.target;
-    console.log("Dragging: " + piece.id); // Debugging drag
-    ev.dataTransfer.setData("text/plain", piece.id); // Set the piece ID in the drag event
+    console.log("Dragging: " + piece.id);
+    const pieceColor = piece.getAttribute("color");
+    if ((isWhiteTurn && pieceColor == "white") || (!isWhiteTurn && pieceColor == "black")) {
+        ev.dataTransfer.setData("text/plain", piece.id);
+    }
 }
 
 function drop(ev) {
     ev.preventDefault();
     const pieceId = ev.dataTransfer.getData("text/plain");
     const piece = document.getElementById(pieceId);
-    console.log("Dropping on: " + ev.currentTarget.id); // Debugging drop
-    ev.currentTarget.appendChild(piece); // Move the piece to the dropped square
+    console.log("Dropping on: " + ev.currentTarget.id);
+    ev.currentTarget.appendChild(piece);
+    isWhiteTurn = !isWhiteTurn;
 }
