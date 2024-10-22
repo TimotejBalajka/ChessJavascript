@@ -52,19 +52,23 @@ function drop(ev) {
     const piece = document.getElementById(pieceId);
     //console.log("Dropping on: " + ev.currentTarget.id);
     const destination = ev.currentTarget;
+
+    const pieceColor = piece.getAttribute("color");
+    if ((isWhiteTurn && pieceColor !== "white") || (!isWhiteTurn && pieceColor !== "black")) {
+        return; 
+    }
+
     if (isSquareOccupied(destination) == "blank") {
         destination.appendChild(piece);
         isWhiteTurn = !isWhiteTurn;
-        return;
     }
 
-    if (isSquareOccupied(destination) !== "blank") {
+    if (isSquareOccupied(destination) !== pieceColor) {
         while (destination.firstChild) {
             destination.removeChild(destination.firstChild);
         }
         destination.appendChild(piece);
         isWhiteTurn = !isWhiteTurn;
-        return;
     }
 }
 
