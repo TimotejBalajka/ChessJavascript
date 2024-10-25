@@ -43,20 +43,33 @@ function drag(ev) {
     const pieceColor = piece.getAttribute("color");
     if ((isWhiteTurn && pieceColor == "white") || (!isWhiteTurn && pieceColor == "black")) {
         ev.dataTransfer.setData("text/plain", piece.id);
+
+        const startSquare = piece.parentElement.id;
+        ev.dataTransfer.setData("startSquare", startSquare);
     }
 }
 
 function drop(ev) {
     ev.preventDefault();
     const pieceId = ev.dataTransfer.getData("text/plain");
+    const startSquare = ev.dataTransfer.getData("startSquare");
     const piece = document.getElementById(pieceId);
     //console.log("Dropping on: " + ev.currentTarget.id);
     const destination = ev.currentTarget;
+    const endSquare = destination.id;
 
     const pieceColor = piece.getAttribute("color");
     if ((isWhiteTurn && pieceColor !== "white") || (!isWhiteTurn && pieceColor !== "black")) {
         return; 
     }
+
+    const startX = startSquare.charCodeAt(0) - 97; 
+    const startY = 8 - parseInt(startSquare[1]); 
+    const endX = endSquare.charCodeAt(0) - 97;
+    const endY = 8 - parseInt(endSquare[1]);
+
+    console.log(`Start: (${startX}, ${startY})`);
+    console.log(`End: (${endX}, ${endY})`);
 
     if (isSquareOccupied(destination) == "blank") {
         destination.appendChild(piece);
