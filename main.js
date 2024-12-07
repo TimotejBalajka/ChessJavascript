@@ -58,7 +58,7 @@ function drop(ev) {
     const destination = ev.currentTarget;
     const endSquare = destination.id;
 
-    const pieceType = piece.getAttribute("class")
+    const pieceType = piece.getAttribute("class");
     const pieceColor = piece.getAttribute("color");
 
     const startX = startSquare.charCodeAt(0) - 97;
@@ -74,52 +74,11 @@ function drop(ev) {
     console.log(`Start: (${startX}, ${startY})`);
     console.log(`End: (${endX}, ${endY})`);
 
-    if (pieceType == "piece pawn") {
-
-        let direction;
-        if (pieceColor === "white") { direction = -1; }
-        else if (pieceColor === "black") { direction = 1; }
-
-        if (pieceColor === "white") { startingRow = 6 }
-        else if (pieceColor === "black") { startingRow = 1 }
-
-        if (startX === endX && endY === startY + direction) {
-            if (isSquareOccupied(destination) == "blank") {
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
-            }
-
-            if (isSquareOccupied(destination) !== pieceColor) {
-                return;
-            }
-        }
-
-        if (startX === endX && startY === startingRow && endY === startY + (2 * direction) && isSquareOccupied(boardSquares[(startY + direction) * 8 + startX]) === "blank")
-        {
-            if (isSquareOccupied(destination) == "blank") {
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
-            }
-
-            if (isSquareOccupied(destination) !== pieceColor) {
-                return;
-            }
-        }
-
-        if (Math.abs(endX - startX) === 1 && endY === startY + direction)
-        {
-            if (isSquareOccupied(destination) !== pieceColor && isSquareOccupied(destination) !== "blank") {
-                while (destination.firstChild) {
-                    destination.removeChild(destination.firstChild);
-                }
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
-            }
-        }
-
-        console.log(direction);
-        console.log(pieceColor);
-    }
+    pawnMoving(piece, pieceType, pieceColor, startX, startY, endX, endY, destination);
+    rookMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor);
+    bishopMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor);
+    kingMoving(piece, startX, startY, endX, endY, pieceColor, pieceType, destination, pieceColor);
+    queenMoving(pieceType, endX, endY, startX, startY, destination, piece, pieceColor);
 
         //if (isSquareOccupied(destination) == "blank") {
         //    destination.appendChild(piece);
@@ -144,3 +103,159 @@ function isSquareOccupied(square) {
         return "blank";
     }
 }
+
+function pawnMoving(piece, pieceType, pieceColor, startX, startY, endX, endY, destination) {
+    if (pieceType == "piece pawn") {
+
+        let direction;
+        if (pieceColor === "white") { direction = -1; }
+        else if (pieceColor === "black") { direction = 1; }
+
+        if (pieceColor === "white") { startingRow = 6 }
+        else if (pieceColor === "black") { startingRow = 1 }
+
+        if (startX === endX && endY === startY + direction) {
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                return;
+            }
+        }
+
+        if (startX === endX && startY === startingRow && endY === startY + (2 * direction) && isSquareOccupied(boardSquares[(startY + direction) * 8 + startX]) === "blank") {
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                return;
+            }
+        }
+
+        if (Math.abs(endX - startX) === 1 && endY === startY + direction) {
+            if (isSquareOccupied(destination) !== pieceColor && isSquareOccupied(destination) !== "blank") {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+
+        console.log(direction);
+        console.log(pieceColor);
+    }
+}
+
+function rookMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
+    if (pieceType == "piece rook") {
+
+
+        if (startX === endX || (endY === startY && isSquareOccupied(boardSquares[(startY + 1) * 8 + startX]) === "blank")) {
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+    }
+}
+
+function bishopMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
+
+    if (pieceType == "piece bishop") {
+
+
+        if (Math.abs(endX - startX) && Math.abs(endY - startY)) {
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+    }
+}
+
+function kingMoving(piece, startX, startY, endX, endY, pieceColor, pieceType, destination, pieceColor) {
+
+    if (pieceType == "piece king") {
+
+        let direction;
+        if (pieceColor === "white") { direction = -1; }
+        else if (pieceColor === "black") { direction = 1; }
+
+        if (startX === endX - direction || endY === startY + direction || startX === endX + direction || endY === startY - direction) {
+
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+
+        if (Math.abs(endX - startX) === 1 && Math.abs(endY - startY) === 1) {
+
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+
+    }
+}
+
+function queenMoving(pieceType, endX, endY, startX, startY, destination, piece, pieceColor) {
+
+    if (pieceType == "piece queen") {
+
+
+        if (Math.abs(endX - startX) || Math.abs(endY - startY) || startX === endX || endY === startY) {
+            if (isSquareOccupied(destination) == "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+
+            if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+    }
+}
+

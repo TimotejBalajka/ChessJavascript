@@ -80,3 +80,10 @@
         font-size: 8px;
     }
 }
+
+@media (min-width: 800px) {
+    .chessBoard {
+        width: 500px;
+        height: 500px;
+    }
+}
