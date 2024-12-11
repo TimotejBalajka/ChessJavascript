@@ -153,9 +153,30 @@ function pawnMoving(piece, pieceType, pieceColor, startX, startY, endX, endY, de
 
 function rookMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
     if (pieceType == "piece rook") {
+        function isRookPathClear() {
 
+            if (startY === endY) {
+                let step = startX < endX ? 1 : -1;
+                for (let x = startX + step; x !== endX; x += step) {
+                    if (isSquareOccupied(boardSquares[startY * 8 + x]) !== "blank") {
+                        return false;
+                    }
+                }
+            }
 
-        if (startX === endX || (endY === startY && isSquareOccupied(boardSquares[(startY + 1) * 8 + startX]) === "blank")) {
+            else if (startX === endX) {
+                let step = startY < endY ? 1 : -1;
+                for (let y = startY + step; y !== endY; y += step) {
+                    if (isSquareOccupied(boardSquares[y * 8 + startX]) !== "blank") {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        if (startX === endX || endY === startY && isRookPathClear()) {
             if (isSquareOccupied(destination) == "blank") {
                 destination.appendChild(piece);
                 isWhiteTurn = !isWhiteTurn;
@@ -174,21 +195,46 @@ function rookMoving(piece, pieceType, startX, endX, startY, endY, destination, p
 
 function bishopMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
 
-    if (pieceType == "piece bishop") {
+    function isBishopPathClear(startX, startY, endX, endY) {
+        const deltaX = endX > startX ? 1 : -1;
+        const deltaY = endY > startY ? 1 : -1;
 
+        let currentX = startX + deltaX;
+        let currentY = startY + deltaY;
 
-        if (Math.abs(endX - startX) && Math.abs(endY - startY)) {
-            if (isSquareOccupied(destination) == "blank") {
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
+        while (currentX !== endX && currentY !== endY) {
+            const squareIndex = currentY * 8 + currentX;
+            const square = boardSquares[squareIndex];
+
+            if (!square) {
+                console.error(`Square at (${currentX}, ${currentY}) not found!`);
+                return false;
             }
 
-            if (isSquareOccupied(destination) !== pieceColor) {
-                while (destination.firstChild) {
-                    destination.removeChild(destination.firstChild);
+            if (isSquareOccupied(square) !== "blank") {
+                return false;
+            }
+
+            currentX += deltaX;
+            currentY += deltaY;
+        }
+
+        return true;
+    }
+
+    if (pieceType === "piece bishop") {
+        if (Math.abs(endX - startX) === Math.abs(endY - startY)) {
+            if (isBishopPathClear(startX, startY, endX, endY)) {
+                if (isSquareOccupied(destination) === "blank") {
+                    destination.appendChild(piece);
+                    isWhiteTurn = !isWhiteTurn;
+                } else if (isSquareOccupied(destination) !== pieceColor) {
+                    while (destination.firstChild) {
+                        destination.removeChild(destination.firstChild);
+                    }
+                    destination.appendChild(piece);
+                    isWhiteTurn = !isWhiteTurn;
                 }
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
             }
         }
     }
@@ -240,9 +286,31 @@ function kingMoving(piece, startX, startY, endX, endY, pieceColor, pieceType, de
 function queenMoving(pieceType, endX, endY, startX, startY, destination, piece, pieceColor) {
 
     if (pieceType == "piece queen") {
+            function isQueenPathClearLikeRook() {
+
+                if (startY === endY) {
+                    let step = startX < endX ? 1 : -1;
+                    for (let x = startX + step; x !== endX; x += step) {
+                        if (isSquareOccupied(boardSquares[startY * 8 + x]) !== "blank") {
+                            return false;
+                        }
+                    }
+                }
+
+                else if (startX === endX) {
+                    let step = startY < endY ? 1 : -1;
+                    for (let y = startY + step; y !== endY; y += step) {
+                        if (isSquareOccupied(boardSquares[y * 8 + startX]) !== "blank") {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
 
 
-        if (Math.abs(endX - startX) || Math.abs(endY - startY) || startX === endX || endY === startY) {
+        if (Math.abs(endX - startX) || Math.abs(endY - startY) || startX === endX || endY === startY && isQueenPathClearLikeRook()) {
             if (isSquareOccupied(destination) == "blank") {
                 destination.appendChild(piece);
                 isWhiteTurn = !isWhiteTurn;
