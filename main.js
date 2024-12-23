@@ -79,6 +79,7 @@ function drop(ev) {
     bishopMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor);
     kingMoving(piece, startX, startY, endX, endY, pieceColor, pieceType, destination, pieceColor);
     queenMoving(pieceType, endX, endY, startX, startY, destination, piece, pieceColor);
+    knightMoving(piece, pieceType, startX, startY, endX, endY, destination, pieceColor);
 
         //if (isSquareOccupied(destination) == "blank") {
         //    destination.appendChild(piece);
@@ -324,6 +325,36 @@ function queenMoving(pieceType, endX, endY, startX, startY, destination, piece, 
                 isWhiteTurn = !isWhiteTurn;
 
             } else if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            }
+        }
+    }
+}
+
+function knightMoving(piece, pieceType, startX, startY, endX, endY, destination, pieceColor) {
+    if (pieceType === "piece knight") {
+        // All possible moves a knight can make
+        const knightMoves = [
+            [2, 1], [2, -1],
+            [-2, 1], [-2, -1],
+            [1, 2], [1, -2],
+            [-1, 2], [-1, -2]
+        ];
+
+        // Check if the move is valid
+        const isValidMove = knightMoves.some(([dx, dy]) => startX + dx === endX && startY + dy === endY);
+
+        if (isValidMove) {
+            if (isSquareOccupied(destination) === "blank") {
+                // Move the knight to the destination
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+            } else if (isSquareOccupied(destination) !== pieceColor) {
+                // Capture the piece
                 while (destination.firstChild) {
                     destination.removeChild(destination.firstChild);
                 }
