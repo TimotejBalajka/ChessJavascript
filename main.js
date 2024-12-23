@@ -146,12 +146,16 @@ function pawnMoving(piece, pieceType, pieceColor, startX, startY, endX, endY, de
             }
         }
 
-        console.log(direction);
+        console.log("Pesiak");
         console.log(pieceColor);
+
     }
 }
 
-function rookMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
+function isRookPathClear(startX, startY, endX, endY ,pieceType) {
+
+    if (pieceType == "piece rook" || pieceType == "piece queen") {
+
 
         if (startX === endX) {
             const step = startY < endY ? 1 : -1;
@@ -169,31 +173,39 @@ function rookMoving(piece, pieceType, startX, endX, startY, endY, destination, p
                     return false;
                 }
             }
-    }
+        }
 
+        return true;
+    }
+}
+
+function rookMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
 
     if (pieceType == "piece rook") {
         if (startX === endX || endY === startY) {
+            if (isRookPathClear(startX, startY, endX, endY, pieceType)) {
 
-            if (isSquareOccupied(destination) == "blank") {
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
-            }
-
-            if (isSquareOccupied(destination) !== pieceColor) {
-                while (destination.firstChild) {
-                    destination.removeChild(destination.firstChild);
+                if (isSquareOccupied(destination) == "blank") {
+                    destination.appendChild(piece);
+                    isWhiteTurn = !isWhiteTurn;
                 }
-                destination.appendChild(piece);
-                isWhiteTurn = !isWhiteTurn;
+
+                if (isSquareOccupied(destination) !== pieceColor) {
+                    while (destination.firstChild) {
+                        destination.removeChild(destination.firstChild);
+                    }
+                    destination.appendChild(piece);
+                    isWhiteTurn = !isWhiteTurn;
+                }
             }
         }
     }
 }
 
-function bishopMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
+function isBishopPathClear(startX, startY, endX, endY, pieceType) {
 
-    function isBishopPathClear(startX, startY, endX, endY) {
+    if (pieceType == "piece bishop" || pieceType == "piece queen") {
+
         const deltaX = endX > startX ? 1 : -1;
         const deltaY = endY > startY ? 1 : -1;
 
@@ -219,10 +231,13 @@ function bishopMoving(piece, pieceType, startX, endX, startY, endY, destination,
 
         return true;
     }
+}
+
+function bishopMoving(piece, pieceType, startX, endX, startY, endY, destination, pieceColor) {
 
     if (pieceType === "piece bishop") {
         if (Math.abs(endX - startX) === Math.abs(endY - startY)) {
-            if (isBishopPathClear(startX, startY, endX, endY)) {
+            if (isBishopPathClear(startX, startY, endX, endY, pieceType)) {
                 if (isSquareOccupied(destination) === "blank") {
                     destination.appendChild(piece);
                     isWhiteTurn = !isWhiteTurn;
@@ -284,37 +299,31 @@ function kingMoving(piece, startX, startY, endX, endY, pieceColor, pieceType, de
 function queenMoving(pieceType, endX, endY, startX, startY, destination, piece, pieceColor) {
 
     if (pieceType == "piece queen") {
-            //function isQueenPathClearLikeRook() {
-
-            //    if (startY === endY) {
-            //        let step = startX < endX ? 1 : -1;
-            //        for (let x = startX + step; x !== endX; x += step) {
-            //            if (isSquareOccupied(boardSquares[startY * 8 + x]) !== "blank") {
-            //                return false;
-            //            }
-            //        }
-            //    }
-
-            //    else if (startX === endX) {
-            //        let step = startY < endY ? 1 : -1;
-            //        for (let y = startY + step; y !== endY; y += step) {
-            //            if (isSquareOccupied(boardSquares[y * 8 + startX]) !== "blank") {
-            //                return false;
-            //            }
-            //        }
-            //    }
-
-            //    return true;
-            //}
 
 
-        if (Math.abs(endX - startX) || Math.abs(endY - startY) || startX === endX || endY === startY /*&& isQueenPathClearLikeRook()*/) {
-            if (isSquareOccupied(destination) == "blank") {
+        const isDiagonal = Math.abs(endX - startX) === Math.abs(endY - startY);
+        const isStraight = startX === endX || startY === endY;
+
+        if (isDiagonal && isBishopPathClear(startX, startY, endX, endY, pieceType)) {
+            if (isSquareOccupied(destination) === "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+
+            } else if (isSquareOccupied(destination) !== pieceColor) {
+                while (destination.firstChild) {
+                    destination.removeChild(destination.firstChild);
+                }
                 destination.appendChild(piece);
                 isWhiteTurn = !isWhiteTurn;
             }
+        }
+        else if (isStraight && isRookPathClear(startX, startY, endX, endY, pieceType)) {
 
-            if (isSquareOccupied(destination) !== pieceColor) {
+            if (isSquareOccupied(destination) === "blank") {
+                destination.appendChild(piece);
+                isWhiteTurn = !isWhiteTurn;
+
+            } else if (isSquareOccupied(destination) !== pieceColor) {
                 while (destination.firstChild) {
                     destination.removeChild(destination.firstChild);
                 }
@@ -324,4 +333,3 @@ function queenMoving(pieceType, endX, endY, startX, startY, destination, piece, 
         }
     }
 }
-
