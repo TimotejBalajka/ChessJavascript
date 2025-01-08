@@ -181,7 +181,15 @@ function drop(ev) {
     endSquare.appendChild(piece);
     isWhiteTurn = !isWhiteTurn;
 
-    console.log("Move executed");
+    const currentPlayerColor = isWhiteTurn ? "white" : "black";
+    if (isCheckmate(currentPlayerColor)) {
+        console.log(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
+        // Optionally, disable further moves or restart the game
+    } else if (isCheck(currentPlayerColor)) {
+        console.log(`${currentPlayerColor} is in check.`);
+    } else {
+        console.log("Move executed.");
+    }
 }
 
 function isSquareOccupied(square) {
@@ -519,4 +527,35 @@ function canAttack(piece, pieceType, startX, startY, endX, endY) {
         default:
             return false;
     }
+}
+
+function isCheckmate(color) {
+    const kingInCheck = isCheck(color); // Check if the king is currently in check
+    if (!kingInCheck) return false; // If the king is not in check, it's not checkmate.
+
+    // Iterate through all pieces of the current player
+    for (const square of boardSquares) {
+        const piece = square.querySelector(".piece");
+        if (piece && piece.getAttribute("color") === color) {
+            const pieceType = piece.getAttribute("class");
+
+            // Get all possible moves for the piece
+            const startX = square.id.charCodeAt(0) - 97;
+            const startY = 8 - parseInt(square.id[1]);
+
+            for (let endX = 0; endX < 8; endX++) {
+                for (let endY = 0; endY < 8; endY++) {
+                    const endSquare = document.getElementById(String.fromCharCode(97 + endX) + (8 - endY));
+                    if (endSquare) {
+                        // Check if the move is valid
+                        if (isMoveValid(piece, square, endSquare)) {
+                            return false; // A legal move exists, so it's not checkmate.
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true; // No legal moves found, checkmate!
 }
