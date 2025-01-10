@@ -190,15 +190,16 @@ function drop(ev) {
     isWhiteTurn = !isWhiteTurn;
 
 
-    //const currentPlayerColor = isWhiteTurn ? "white" : "black";
-    //if (isCheckmate(currentPlayerColor)) {
-    //    console.log(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
-    //    // Optionally, disable further moves or restart the game
-    //} else if (isCheck(currentPlayerColor)) {
-    //    console.log(`${currentPlayerColor} is in check.`);
-    //} else {
-    //    console.log("Move executed.");
-    //}
+    const currentPlayerColor = isWhiteTurn ? "white" : "black";
+    if (isCheckmate(currentPlayerColor)) {
+        console.log(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
+        alert(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
+        // Optionally, disable further moves or restart the game
+    } else if (isCheck(currentPlayerColor)) {
+        console.log(`${currentPlayerColor} is in check.`);
+    } else {
+        console.log("Move executed.");
+    }
 }
 
 function isSquareOccupied(square) {
@@ -278,14 +279,14 @@ function canAttack(piece, pieceType, startX, startY, endX, endY) {
     }
 }
 
-function isCheckmate(color) {
-    const kingInCheck = isCheck(color); // Check if the king is currently in check
+function isCheckmate(currentPlayerColor) {
+    const kingInCheck = isCheck(currentPlayerColor); // Check if the king is currently in check
     if (!kingInCheck) return false; // If the king is not in check, it's not checkmate.
 
     // Iterate through all pieces of the current player
     for (const square of boardSquares) {
         const piece = square.querySelector(".piece");
-        if (piece && piece.getAttribute("color") === color) {
+        if (piece && piece.getAttribute("color") === currentPlayerColor) {
             const pieceType = piece.getAttribute("class");
 
             // Get all possible moves for the piece
