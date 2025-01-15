@@ -187,6 +187,12 @@ function drop(ev) {
         endSquare.removeChild(capturedPiece);
     }
     endSquare.appendChild(piece);
+
+    if (piece.classList.contains("pawn") && (endSquare.id[1] === "1" || endSquare.id[1] === "8")) {
+        const color = piece.getAttribute("color");
+        promotePawn(piece, color);
+    }
+
     isWhiteTurn = !isWhiteTurn;
 
 
@@ -200,6 +206,7 @@ function drop(ev) {
     } else {
         console.log("Move executed.");
     }
+    console.log(piece.src);
 }
 
 function isSquareOccupied(square) {
@@ -367,4 +374,29 @@ function isBishopPathClear(startX, startY, endX, endY, pieceType) {
 
         return true;
     }
+}
+
+function promotePawn(pawn, color) {
+    // Create a modal for the user to choose the promoted piece
+    const modal = document.createElement("div");
+    modal.setAttribute("class", "promotion-modal");
+
+    const options = ["queen", "rook", "bishop", "knight"];
+    options.forEach((option) => {
+        const button = document.createElement("button");
+        button.textContent = option.charAt(0).toUpperCase() + option.slice(1);
+        button.addEventListener("click", () => {
+            // Update the pawn to the selected piece
+            const newPieceImage = `pieces/${color}${option}.png`;
+            const pawnImg = pawn.querySelector("img");
+            if (pawnImg) {
+                pawnImg.src = newPieceImage;
+            }
+            pawn.setAttribute("class", `piece ${option}`);
+            document.body.removeChild(modal); // Remove the modal
+        });
+        modal.appendChild(button);
+    });
+
+    document.body.appendChild(modal);
 }
