@@ -5,6 +5,7 @@ const boardSquares = document.getElementsByClassName("square");
 const pieces = document.getElementsByClassName("piece");
 const piecesImages = document.getElementsByTagName("img");
 
+
 document.addEventListener("DOMContentLoaded", function () {
     setupBoardSquares();
     setupPieces();
@@ -14,6 +15,7 @@ function setupBoardSquares() {
     for (let i = 0; i < boardSquares.length; i++) {
         boardSquares[i].addEventListener("dragover", allowDrop);
         boardSquares[i].addEventListener("drop", drop);
+        document.getElementById("restartButton").addEventListener("click", resetBoard);
         let row = 8 - Math.floor(i / 8);
         let column = String.fromCharCode(97 + (i % 8));
         let square = boardSquares[i];
@@ -399,4 +401,45 @@ function promotePawn(pawn, color) {
     });
 
     document.body.appendChild(modal);
+}
+
+
+function resetBoard() {
+    // Clear all squares
+    for (let square of boardSquares) {
+        square.innerHTML = "";
+    }
+
+    // Reset pieces
+    const initialSetup = {
+        a1: "whiteRook", a2: "whitePawn", a7: "blackPawn", a8: "blackRook",
+        b1: "whiteKnight", b2: "whitePawn", b7: "blackPawn", b8: "blackKnight",
+        c1: "whiteBishop", c2: "whitePawn", c7: "blackPawn", c8: "blackBishop",
+        d1: "whiteQueen", d2: "whitePawn", d7: "blackPawn", d8: "blackQueen",
+        e1: "whiteKing", e2: "whitePawn", e7: "blackPawn", e8: "blackKing",
+        f1: "whiteBishop", f2: "whitePawn", f7: "blackPawn", f8: "blackBishop",
+        g1: "whiteKnight", g2: "whitePawn", g7: "blackPawn", g8: "blackKnight",
+        h1: "whiteRook", h2: "whitePawn", h7: "blackPawn", h8: "blackRook",
+    };
+
+    for (const [squareId, piece] of Object.entries(initialSetup)) {
+        const square = document.getElementById(squareId);
+        const pieceDiv = document.createElement("div");
+        pieceDiv.className = `piece ${piece.slice(5).toLowerCase()}`;
+        pieceDiv.setAttribute("color", piece.startsWith("white") ? "white" : "black");
+        pieceDiv.setAttribute("draggable", true);
+
+        const pieceImg = document.createElement("img");
+        pieceImg.src = `pieces/${piece}.png`;
+        pieceImg.setAttribute("draggable", false);
+
+        pieceDiv.appendChild(pieceImg);
+        square.appendChild(pieceDiv);
+    }
+
+    // Reset turn
+    isWhiteTurn = true;
+    console.log("Board reset!");
+    setupBoardSquares();
+    setupPieces();
 }
