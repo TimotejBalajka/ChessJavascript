@@ -1,16 +1,18 @@
-﻿body{
+﻿body {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    background-color: #161512;
 }
 
 .chessBoard {
-    width: 80vw;
-    height: 80vw;
+    width: 100vw;
+    height: 100vw;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
+    
 }
 
 .square {
@@ -87,6 +89,7 @@
         cursor: pointer;
     }
 
+
 @media (min-width:600px) {
     .chessBoard {
         width: 600px;
@@ -102,7 +105,40 @@
 
 @media (min-width: 800px) {
     .chessBoard {
-        width: 500px;
-        height: 500px;
+        width: 750px;
+        height: 750px;
+        margin-left: 250px;
     }
+}
+
+.restart {
+    padding: 17px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    border: 0;
+    background-color: white;
+    box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 15px;
+    transition: all 0.5s ease;
+    position: absolute;
+    left: 1050px;
+    top: 100px;
+}
+
+.restart:hover {
+    letter-spacing: 3px;
+    background-color: rgb( 181 136 99);
+    color: hsl(0, 0%, 100%);
+    box-shadow: rgb(181 136 99) 0px 7px 29px 0px;
+}
+
+.restart:active {
+    letter-spacing: 3px;
+    background-color: rgb( 181 136 99);
+    color: hsl(0, 0%, 100%);
+    box-shadow: rgb(181 136 99) 0px 0px 0px 0px;
+    transform: translateY(10px);
+    transition: 100ms;
 }
