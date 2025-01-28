@@ -142,3 +142,71 @@
     transform: translateY(10px);
     transition: 100ms;
 }
+
+.save {
+    padding: 17px 40px;
+    border-radius: 50px;
+    width: 214.7px;
+    cursor: pointer;
+    border: 0;
+    background-color: white;
+    box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 15px;
+    transition: all 0.5s ease;
+    position: absolute;
+    left: 1050px;
+    top: 170px;
+}
+
+    .save:hover {
+        letter-spacing: 3px;
+        background-color: rgb( 181 136 99);
+        color: hsl(0, 0%, 100%);
+        box-shadow: rgb(181 136 99) 0px 7px 29px 0px;
+    }
+
+    .save:active {
+        letter-spacing: 3px;
+        background-color: rgb( 181 136 99);
+        color: hsl(0, 0%, 100%);
+        box-shadow: rgb(181 136 99) 0px 0px 0px 0px;
+        transform: translateY(10px);
+        transition: 100ms;
+    }
+
+
+.load {
+    padding: 17px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    border: 0;
+    width: 214.7px;
+    background-color: white;
+    box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 15px;
+    transition: all 0.5s ease;
+    position: absolute;
+    left: 1050px;
+    top: 240px;
+}
+
+    .load:hover {
+        letter-spacing: 3px;
+        background-color: rgb( 181 136 99);
+        color: hsl(0, 0%, 100%);
+        box-shadow: rgb(181 136 99) 0px 7px 29px 0px;
+    }
+
+    .load:active {
+        letter-spacing: 3px;
+        background-color: rgb( 181 136 99);
+        color: hsl(0, 0%, 100%);
+        box-shadow: rgb(181 136 99) 0px 0px 0px 0px;
+        transform: translateY(10px);
+        transition: 100ms;
+    }
+

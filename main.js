@@ -9,7 +9,6 @@ const piecesImages = document.getElementsByTagName("img");
 document.addEventListener("DOMContentLoaded", function () {
     setupBoardSquares();
     setupPieces();
-    loadGameState();
 });
 
 function setupBoardSquares() {
@@ -17,6 +16,8 @@ function setupBoardSquares() {
         boardSquares[i].addEventListener("dragover", allowDrop);
         boardSquares[i].addEventListener("drop", drop);
         document.getElementById("restartButton").addEventListener("click", resetBoard);
+        document.getElementById("saveButton").addEventListener("click", saveGameState);
+        document.getElementById("loadButton").addEventListener("click", loadGameState);
         let row = 8 - Math.floor(i / 8);
         let column = String.fromCharCode(97 + (i % 8));
         let square = boardSquares[i];
@@ -198,13 +199,12 @@ function drop(ev) {
 
     isWhiteTurn = !isWhiteTurn;
 
-    saveGameState(); // Save the state after the move
 
+    // Check for checkmate or check
     const currentPlayerColor = isWhiteTurn ? "white" : "black";
     if (isCheckmate(currentPlayerColor)) {
         console.log(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
         alert(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
-        // Optionally, disable further moves or restart the game
     } else if (isCheck(currentPlayerColor)) {
         console.log(`${currentPlayerColor} is in check.`);
     } else {
@@ -447,59 +447,65 @@ function resetBoard() {
     setupPieces();
 }
 
+// Save the game state
 function saveGameState() {
     const gameState = {
         pieces: [],
-        isWhiteTurn: isWhiteTurn
+        turn: isWhiteTurn
     };
 
-    // Loop through all squares to save piece positions
-    for (let square of boardSquares) {
+    for (let i = 0; i < boardSquares.length; i++) {
+        const square = boardSquares[i];
         const piece = square.querySelector(".piece");
+
         if (piece) {
-            gameState.pieces.push({
-                squareId: square.id,
-                pieceClass: piece.getAttribute("class"),
-                pieceColor: piece.getAttribute("color"),
-                pieceImage: piece.querySelector("img").src
-            });
+            const pieceInfo = {
+                id: piece.id,
+                color: piece.getAttribute("color"),
+                type: piece.classList[1],
+                squareId: square.id
+            };
+            gameState.pieces.push(pieceInfo);
         }
     }
 
-    // Save to localStorage
     localStorage.setItem("chessGameState", JSON.stringify(gameState));
+    console.log("Game saved!");
 }
 
+// Load the game state
 function loadGameState() {
-    const savedState = localStorage.getItem("chessGameState");
-    if (savedState) {
-        const gameState = JSON.parse(savedState);
+    const savedGameState = localStorage.getItem("chessGameState");
 
-        // Reset the board
+    if (savedGameState) {
+        const gameState = JSON.parse(savedGameState);
+
+        // Clear the board first
         for (let square of boardSquares) {
             square.innerHTML = "";
         }
 
-        // Restore pieces
-        gameState.pieces.forEach(pieceData => {
-            const square = document.getElementById(pieceData.squareId);
-            if (square) {
-                const piece = document.createElement("div");
-                piece.setAttribute("class", pieceData.pieceClass);
-                piece.setAttribute("color", pieceData.pieceColor);
-                piece.setAttribute("draggable", true);
+        // Place pieces back on the board
+        for (const pieceInfo of gameState.pieces) {
+            const square = document.getElementById(pieceInfo.squareId);
+            const pieceDiv = document.createElement("div");
+            pieceDiv.className = `piece ${pieceInfo.type}`;
+            pieceDiv.setAttribute("color", pieceInfo.color);
+            pieceDiv.setAttribute("draggable", true);
 
-                const img = document.createElement("img");
-                img.src = pieceData.pieceImage;
-                img.setAttribute("draggable", false);
+            const pieceImg = document.createElement("img");
+            pieceImg.src = `pieces/${pieceInfo.color}${pieceInfo.type.charAt(0).toUpperCase() + pieceInfo.type.slice(1)}.png`;
+            pieceImg.setAttribute("draggable", false);
 
-                piece.appendChild(img);
-                square.appendChild(piece);
-                piece.addEventListener("dragstart", drag);
-            }
-        });
+            pieceDiv.appendChild(pieceImg);
+            square.appendChild(pieceDiv);
+        }
 
         // Restore the turn
-        isWhiteTurn = gameState.isWhiteTurn;
+        isWhiteTurn = gameState.turn;
+        console.log("Game loaded!");
+        setupPieces();
+    } else {
+        console.log("No saved game found.");
     }
 }
