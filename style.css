@@ -210,3 +210,12 @@
         transition: 100ms;
     }
 
+
+.history-box {
+    width: 200px;
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid black;
+    padding: 10px;
+    background: white;
+}

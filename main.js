@@ -1,4 +1,4 @@
-// JavaScript source code
+﻿// JavaScript source code
 let legalSquares = [];
 let isWhiteTurn = true;
 const boardSquares = document.getElementsByClassName("square");
@@ -187,10 +187,24 @@ function drop(ev) {
 
     // Execute the move
     const capturedPiece = endSquare.querySelector(".piece");
+    const capturedPieceType = capturedPiece ? capturedPiece.getAttribute("class") : null;
+
     if (capturedPiece) {
         endSquare.removeChild(capturedPiece);
     }
     endSquare.appendChild(piece);
+
+    const move = {
+        piece: piece.className,
+        color: piece.getAttribute("color"),
+        start: startSquare.id,
+        end: endSquare.id,
+        captured: capturedPieceType,
+    };
+    moveHistory.push(move);
+
+    // Display the move history
+    updateMoveHistoryDisplay();
 
     if (piece.classList.contains("pawn") && (endSquare.id[1] === "1" || endSquare.id[1] === "8")) {
         const color = piece.getAttribute("color");
@@ -445,6 +459,8 @@ function resetBoard() {
     console.log("Board reset!");
     setupBoardSquares();
     setupPieces();
+    moveHistory = [];
+    updateMoveHistoryDisplay();
 }
 
 // Save the game state
@@ -470,14 +486,16 @@ function saveGameState() {
     }
 
     localStorage.setItem("chessGameState", JSON.stringify(gameState));
+    localStorage.setItem("moveHistory", JSON.stringify(moveHistory)); // Save move history
     console.log("Game saved!");
 }
 
 // Load the game state
 function loadGameState() {
     const savedGameState = localStorage.getItem("chessGameState");
+    const savedMoveHistory = localStorage.getItem("moveHistory");
 
-    if (savedGameState) {
+    if (savedGameState, savedMoveHistory) {
         const gameState = JSON.parse(savedGameState);
 
         // Clear the board first
@@ -501,6 +519,11 @@ function loadGameState() {
             square.appendChild(pieceDiv);
         }
 
+        if (savedMoveHistory) {
+            moveHistory = JSON.parse(savedMoveHistory);
+            updateMoveHistoryDisplay();
+        }
+
         // Restore the turn
         isWhiteTurn = gameState.turn;
         console.log("Game loaded!");
@@ -508,4 +531,22 @@ function loadGameState() {
     } else {
         console.log("No saved game found.");
     }
+}
+
+let moveHistory = [];
+
+function deleteMoveHistory() {
+    moveHistory = [];
+}
+
+function updateMoveHistoryDisplay() {
+    const historyDiv = document.getElementById("moveHistory");
+    historyDiv.innerHTML = ""; // Clear previous history
+
+    moveHistory.forEach((move, index) => {
+        const moveText = document.createElement("p");
+        moveText.textContent = `${index + 1}. ${move.color} ${move.piece.split(" ")[1]} to ${move.end}` +
+            (move.captured ? ` (Captured ${move.captured.split(" ")[1]})` : "");
+        historyDiv.appendChild(moveText);
+    });
 }
