@@ -549,4 +549,8 @@ function updateMoveHistoryDisplay() {
             (move.captured ? ` (Captured ${move.captured.split(" ")[1]})` : "");
         historyDiv.appendChild(moveText);
     });
-}
+
+    setTimeout(() => {
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+    }, 0);
+}   

@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100%;
     background-color: #161512;
 }
 
@@ -73,7 +73,7 @@
 .promotion-modal {
     position: fixed;
     top: 50%;
-    left: 50%;
+    left: 40%;
     transform: translate(-50%, -50%);
     background-color: white;
     border: 1px solid black;
@@ -87,29 +87,22 @@
         padding: 10px;
         font-size: 16px;
         cursor: pointer;
+        border-radius: 50px;
+        border: 0;
+        background-color: white;
+        box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-size: 15px;
+        transition: all 0.5s ease;
     }
 
-
-@media (min-width:600px) {
-    .chessBoard {
-        width: 600px;
-        height: 600px;
+    .promotion-modal button:hover{
+        letter-spacing: 3px;
+        background-color: rgb( 181 136 99);
+        color: hsl(0, 0%, 100%);
+        box-shadow: rgb(181 136 99) 0px 7px 29px 0px;
     }
-}
-
-@media (max-width:600px) {
-    .coordinate {
-        font-size: 8px;
-    }
-}
-
-@media (min-width: 800px) {
-    .chessBoard {
-        width: 750px;
-        height: 750px;
-        margin-left: 250px;
-    }
-}
 
 .restart {
     padding: 17px 40px;
@@ -160,21 +153,21 @@
     top: 170px;
 }
 
-    .save:hover {
-        letter-spacing: 3px;
-        background-color: rgb( 181 136 99);
-        color: hsl(0, 0%, 100%);
-        box-shadow: rgb(181 136 99) 0px 7px 29px 0px;
-    }
+.save:hover {
+    letter-spacing: 3px;
+    background-color: rgb( 181 136 99);
+    color: hsl(0, 0%, 100%);
+    box-shadow: rgb(181 136 99) 0px 7px 29px 0px;
+}
 
-    .save:active {
-        letter-spacing: 3px;
-        background-color: rgb( 181 136 99);
-        color: hsl(0, 0%, 100%);
-        box-shadow: rgb(181 136 99) 0px 0px 0px 0px;
-        transform: translateY(10px);
-        transition: 100ms;
-    }
+.save:active {
+    letter-spacing: 3px;
+    background-color: rgb( 181 136 99);
+    color: hsl(0, 0%, 100%);
+    box-shadow: rgb(181 136 99) 0px 0px 0px 0px;
+    transform: translateY(10px);
+    transition: 100ms;
+}
 
 
 .load {
@@ -218,4 +211,80 @@
     border: 1px solid black;
     padding: 10px;
     background: white;
+    margin-right: 20px;
+    scroll-behavior: smooth; /* Enables smooth scrolling */
+}
+
+
+@media (min-width:600px) {
+    .chessBoard {
+        width: 600px;
+        height: 600px;
+    }
+}
+
+@media (max-width:600px) {
+    .coordinate {
+        font-size: 8px;
+    }
+}
+
+@media (min-width: 800px) {
+    .chessBoard {
+        width: 450px;
+        height: 450px;
+        margin-left: 250px;
+        top: 30px;
+        position: relative;
+    }
+
+    .restart {
+        padding: 17px 40px;
+        border-radius: 50px;
+        cursor: pointer;
+        border: 0;
+        background-color: white;
+        box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-size: 15px;
+        transition: all 0.5s ease;
+        position: absolute;
+        left: 750px;
+        top: 50px;
+    }
+
+    .save {
+        padding: 17px 40px;
+        border-radius: 50px;
+        width: 214.7px;
+        cursor: pointer;
+        border: 0;
+        background-color: white;
+        box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-size: 15px;
+        transition: all 0.5s ease;
+        position: absolute;
+        left: 750px;
+        top: 120px;
+    }
+
+    .load {
+        padding: 17px 40px;
+        border-radius: 50px;
+        cursor: pointer;
+        border: 0;
+        width: 214.7px;
+        background-color: white;
+        box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-size: 15px;
+        transition: all 0.5s ease;
+        position: absolute;
+        left: 750px;
+        top: 190px;
+    }
 }
