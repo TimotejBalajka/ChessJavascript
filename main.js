@@ -41,17 +41,16 @@ function allowDrop(ev) {
     ev.preventDefault();
 }
 
-function drag(ev) {
-    const piece = ev.target;
-    //console.log("Dragging: " + piece.id);
-    const pieceColor = piece.getAttribute("color");
-    if ((isWhiteTurn && pieceColor == "white") || (!isWhiteTurn && pieceColor == "black")) {
-        ev.dataTransfer.setData("text/plain", piece.id);
+    function drag(ev) {
+        const piece = ev.target;
+        const pieceColor = piece.getAttribute("color");
+        if ((isWhiteTurn && pieceColor == "white") || (!isWhiteTurn && pieceColor == "black")) {
+            ev.dataTransfer.setData("text/plain", piece.id);
 
-        const startSquare = piece.parentElement.id;
-        ev.dataTransfer.setData("startSquare", startSquare);
+            const startSquare = piece.parentElement.id;
+            ev.dataTransfer.setData("startSquare", startSquare);
+        }
     }
-}
 
 function validateMove(piece, startSquare, endSquare) {
     const pieceType = piece.getAttribute("class");
@@ -61,7 +60,6 @@ function validateMove(piece, startSquare, endSquare) {
     const endX = endSquare.id.charCodeAt(0) - 97;
     const endY = 8 - parseInt(endSquare.id[1]);
 
-    // Validate based on piece type
     switch (pieceType) {
         case "piece pawn":
             return validatePawnMove(startX, startY, endX, endY, pieceColor, endSquare);
@@ -84,19 +82,16 @@ function validatePawnMove(startX, startY, endX, endY, color, endSquare) {
     const direction = color === "white" ? -1 : 1;
     const startingRow = color === "white" ? 6 : 1;
 
-    // Normal move
     if (startX === endX && endY === startY + direction && isSquareOccupied(endSquare) === "blank") {
         return true;
     }
 
-    // Initial double move
     if (startX === endX && startY === startingRow && endY === startY + 2 * direction &&
         isSquareOccupied(boardSquares[(startY + direction) * 8 + startX]) === "blank" &&
         isSquareOccupied(endSquare) === "blank") {
         return true;
     }
 
-    // Capture
     if (Math.abs(endX - startX) === 1 && endY === startY + direction &&
         isSquareOccupied(endSquare) !== "blank" &&
         isSquareOccupied(endSquare) !== color) {
@@ -154,7 +149,6 @@ function isMoveValid(piece, startSquare, endSquare) {
         return false;
     }
 
-    // Simulate move to check for king safety
     const originalParent = piece.parentElement;
     const capturedPiece = endSquare.querySelector(".piece");
     if (capturedPiece) {
@@ -164,7 +158,6 @@ function isMoveValid(piece, startSquare, endSquare) {
 
     const isKingSafe = !isCheck(piece.getAttribute("color"));
 
-    // Revert the move
     originalParent.appendChild(piece);
     if (capturedPiece) {
         endSquare.appendChild(capturedPiece);
@@ -185,7 +178,6 @@ function drop(ev) {
         return;
     }
 
-    // Execute the move
     const capturedPiece = endSquare.querySelector(".piece");
     const capturedPieceType = capturedPiece ? capturedPiece.getAttribute("class") : null;
 
@@ -203,7 +195,6 @@ function drop(ev) {
     };
     moveHistory.push(move);
 
-    // Display the move history
     updateMoveHistoryDisplay();
 
     if (piece.classList.contains("pawn") && (endSquare.id[1] === "1" || endSquare.id[1] === "8")) {
@@ -213,8 +204,6 @@ function drop(ev) {
 
     isWhiteTurn = !isWhiteTurn;
 
-
-    // Check for checkmate or check
     const currentPlayerColor = isWhiteTurn ? "white" : "black";
     if (isCheckmate(currentPlayerColor)) {
         console.log(`Checkmate! ${currentPlayerColor === "white" ? "Black" : "White"} wins!`);
@@ -238,16 +227,14 @@ function isSquareOccupied(square) {
 }
 
 function isCheck(color) {
-    const opponentColor = color === "white" ? "black" : "white";
+    const opponentColor = color === "white" ? "black" : "white";    
     const kingSquare = findKing(color);
 
-    // Check all opponent pieces to see if any can attack the king
     for (const square of boardSquares) {
         const piece = square.querySelector(".piece");
         if (piece && piece.getAttribute("color") === opponentColor) {
             const pieceType = piece.getAttribute("class");
 
-            // Use existing movement functions to check if the piece can attack the king
             const startX = square.id.charCodeAt(0) - 97;
             const startY = 8 - parseInt(square.id[1]);
             const endX = kingSquare.id.charCodeAt(0) - 97;
@@ -272,7 +259,7 @@ function findKing(color) {
 }
 
 function canAttack(piece, pieceType, startX, startY, endX, endY) {
-    // Simulate movement logic for each piece
+
     switch (pieceType) {
         case "piece pawn":
             const direction = piece.getAttribute("color") === "white" ? -1 : 1;
@@ -305,16 +292,14 @@ function canAttack(piece, pieceType, startX, startY, endX, endY) {
 }
 
 function isCheckmate(currentPlayerColor) {
-    const kingInCheck = isCheck(currentPlayerColor); // Check if the king is currently in check
-    if (!kingInCheck) return false; // If the king is not in check, it's not checkmate.
+    const kingInCheck = isCheck(currentPlayerColor);
+    if (!kingInCheck) return false;
 
-    // Iterate through all pieces of the current player
     for (const square of boardSquares) {
         const piece = square.querySelector(".piece");
         if (piece && piece.getAttribute("color") === currentPlayerColor) {
             const pieceType = piece.getAttribute("class");
 
-            // Get all possible moves for the piece
             const startX = square.id.charCodeAt(0) - 97;
             const startY = 8 - parseInt(square.id[1]);
 
@@ -322,9 +307,9 @@ function isCheckmate(currentPlayerColor) {
                 for (let endY = 0; endY < 8; endY++) {
                     const endSquare = document.getElementById(String.fromCharCode(97 + endX) + (8 - endY));
                     if (endSquare) {
-                        // Check if the move is valid
+
                         if (isMoveValid(piece, square, endSquare)) {
-                            return false; // A legal move exists, so it's not checkmate.
+                            return false;
                         }
                     }
                 }
@@ -332,7 +317,7 @@ function isCheckmate(currentPlayerColor) {
         }
     }
 
-    return true; // No legal moves found, checkmate!
+    return true;
 }
 
 function isRookPathClear(startX, startY, endX, endY, pieceType) {
@@ -395,7 +380,6 @@ function isBishopPathClear(startX, startY, endX, endY, pieceType) {
 }
 
 function promotePawn(pawn, color) {
-    // Create a modal for the user to choose the promoted piece
     const modal = document.createElement("div");
     modal.setAttribute("class", "promotion-modal");
 
@@ -404,14 +388,14 @@ function promotePawn(pawn, color) {
         const button = document.createElement("button");
         button.textContent = option.charAt(0).toUpperCase() + option.slice(1);
         button.addEventListener("click", () => {
-            // Update the pawn to the selected piece
+
             const newPieceImage = `pieces/${color}${option}.png`;
             const pawnImg = pawn.querySelector("img");
             if (pawnImg) {
                 pawnImg.src = newPieceImage;
             }
             pawn.setAttribute("class", `piece ${option}`);
-            document.body.removeChild(modal); // Remove the modal
+            document.body.removeChild(modal);
         });
         modal.appendChild(button);
     });
@@ -421,13 +405,11 @@ function promotePawn(pawn, color) {
 
 
 function resetBoard() {
-    // Clear all squares
-    localStorage.removeItem("chessGameState"); // Clear saved game state
+    localStorage.removeItem("chessGameState");
     for (let square of boardSquares) {
         square.innerHTML = "";
     }
 
-    // Reset pieces
     const initialSetup = {
         a1: "whiteRook", a2: "whitePawn", a7: "blackPawn", a8: "blackRook",
         b1: "whiteKnight", b2: "whitePawn", b7: "blackPawn", b8: "blackKnight",
@@ -454,7 +436,6 @@ function resetBoard() {
         square.appendChild(pieceDiv);
     }
 
-    // Reset turn
     isWhiteTurn = true;
     console.log("Board reset!");
     setupBoardSquares();
@@ -463,7 +444,6 @@ function resetBoard() {
     updateMoveHistoryDisplay();
 }
 
-// Save the game state
 function saveGameState() {
     const gameState = {
         pieces: [],
@@ -486,11 +466,10 @@ function saveGameState() {
     }
 
     localStorage.setItem("chessGameState", JSON.stringify(gameState));
-    localStorage.setItem("moveHistory", JSON.stringify(moveHistory)); // Save move history
+    localStorage.setItem("moveHistory", JSON.stringify(moveHistory));
     console.log("Game saved!");
 }
 
-// Load the game state
 function loadGameState() {
     const savedGameState = localStorage.getItem("chessGameState");
     const savedMoveHistory = localStorage.getItem("moveHistory");
@@ -498,12 +477,10 @@ function loadGameState() {
     if (savedGameState, savedMoveHistory) {
         const gameState = JSON.parse(savedGameState);
 
-        // Clear the board first
         for (let square of boardSquares) {
             square.innerHTML = "";
         }
 
-        // Place pieces back on the board
         for (const pieceInfo of gameState.pieces) {
             const square = document.getElementById(pieceInfo.squareId);
             const pieceDiv = document.createElement("div");
@@ -524,7 +501,6 @@ function loadGameState() {
             updateMoveHistoryDisplay();
         }
 
-        // Restore the turn
         isWhiteTurn = gameState.turn;
         console.log("Game loaded!");
         setupPieces();
@@ -541,7 +517,7 @@ function deleteMoveHistory() {
 
 function updateMoveHistoryDisplay() {
     const historyDiv = document.getElementById("moveHistory");
-    historyDiv.innerHTML = ""; // Clear previous history
+    historyDiv.innerHTML = "";
 
     moveHistory.forEach((move, index) => {
         const moveText = document.createElement("p");
